@@ -1,0 +1,13 @@
+Package: rprodraqc19
+Type: Package
+Title: Pseudo code template
+Version: 0.1.0
+Author: Bruno Tremblay
+Maintainer: Bruno Tremblay <bruno.tremblay@lacapitale.com>
+Description: It is a placeholder
+License: GPL-2
+Encoding: UTF-8
+LazyData: false
+Depends: R (>= 2.10), xgboost, Matrix, data.table
+Imports:
+  jsonlite

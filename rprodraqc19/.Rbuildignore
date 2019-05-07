@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.RData$
+^\.Rhistory$
+^data-raw$
+^vignettes$
+^tests$
