@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css : [xaringan-themer.css, custom.css]
+    css : [xaringan-themer.css, docs/custom.css]
     nature:
       highlightStyle: github
       highlightLines: true
@@ -24,7 +24,7 @@ mono_accent(
   base_color = "#175dac",
   title_slide_text_color = "white",
   title_slide_background_color = "#175dac",
-  title_slide_background_image = "logo_r_a_quebec_2019_presente_par_ia_blanc.png",
+  title_slide_background_image = "./docs/logo_r_a_quebec_2019_presente_par_ia_blanc.png",
   title_slide_background_position = "90% 90%",
   title_slide_background_size = "200px",
   text_font_size = "18px",
@@ -44,9 +44,9 @@ Actuariat ULaval 2007, FCAS, CSPA
 [linkedin@neoxone](https://www.linkedin.com/in/neoxone/)
 
 R Community highlight : 
-> La fois où Max Kuhn a accepté mon pull request. ![topedo](topedo.png)
+> La fois où Max Kuhn a accepté mon pull request. ![topedo](docs/topedo.png)
 
-<img src="avatar.png" style="position:absolute; top:34%; right: 10%; width: 10%">
+<img src="./docs/avatar.png" style="position:absolute; top:34%; right: 10%; width: 10%">
 
 ---
 class: withheader
@@ -68,24 +68,24 @@ class: withheader
 
 ## Architecture
 
-<div style="float: left; height:8em; width: 8em; background-color: #92C744; text-align: center"><img src="package.png" style="width: 95%"></div>
+<div style="float: left; height:8em; width: 8em; background-color: #92C744; text-align: center"><img src="./docs/package.png" style="width: 95%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ⇴</span>
-<div style="float: left; height:7.5em; width: 8em; background-color: #92C744; text-align: center; padding-top:0.5em"><img src="plumber.png" style="width: 95%"></div>
+<div style="float: left; height:7.5em; width: 8em; background-color: #92C744; text-align: center; padding-top:0.5em"><img src="./docs/plumber.png" style="width: 95%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ◇ </span>
-<div style="float: left; height:7em; width: 8em; background-color: orange; text-align: center; padding-top: 1em"><img src="docker.png" style="width: 90%"></div>
+<div style="float: left; height:7em; width: 8em; background-color: orange; text-align: center; padding-top: 1em"><img src="./docs/docker.png" style="width: 90%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ⇴ </span>
-<div style="float: left; height:7.5em; width: 8em; background-color: orange; text-align: center; padding-top: 0.5em"><img src="kubernetes.png" style="width: 85%"></div>
+<div style="float: left; height:7.5em; width: 8em; background-color: orange; text-align: center; padding-top: 0.5em"><img src="./docs/kubernetes.png" style="width: 85%"></div>
 <div style="clear: both;"></div>
 
 ## Outils
 
-<div style="float: left; height:7em; width: 8em; background-color: #92C744; text-align: center; padding-top: 1em"><img src="r.png" style="width: 90%"></div>
+<div style="float: left; height:7em; width: 8em; background-color: #92C744; text-align: center; padding-top: 1em"><img src="./docs/r.png" style="width: 90%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ◆ </span>
-<div style="float: left; height:5.5em; width: 8em; background-color: #92C744; text-align: center; padding-top: 2.5em"><img src="rstudio.png" style="width: 95%"></div>
+<div style="float: left; height:5.5em; width: 8em; background-color: #92C744; text-align: center; padding-top: 2.5em"><img src="./docs/rstudio.png" style="width: 95%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ◆ </span>
-<div style="float: left; height:5.75em; width: 8em; background-color: #92C744; text-align: center; padding-top: 2.25em"><img src="git.png" style="width: 90%"></div>
+<div style="float: left; height:5.75em; width: 8em; background-color: #92C744; text-align: center; padding-top: 2.25em"><img src="./docs/git.png" style="width: 90%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ◇ </span>
-<div style="float: left; height:7.5em; width: 8em; background-color: orange; text-align: center; padding-top: 0.5em"><img src="jenkins.png" style="width: 65%"></div>
+<div style="float: left; height:7.5em; width: 8em; background-color: orange; text-align: center; padding-top: 0.5em"><img src="./docs/jenkins.png" style="width: 65%"></div>
 <div style="clear: both;"></div>
 
 ???
@@ -112,7 +112,7 @@ class: withheader
 
 ## Structure du package<sup>1</sup>
 
-<img src="template.png" style="float:right; width: 16%">
+<img src="./docs/template.png" style="float:right; width: 16%">
 
 - `data` : Objets nécessaires au pipeline enregistré avec le package.
 - `data-raw` : Entraînement des modèles et expérimentations.
@@ -165,7 +165,7 @@ plumber::plumb("plumber.R")$run # ou le bouton dans RStudio
 
 #### Valider l'API du package localement
 
-<img src="sonic.png" style="position:absolute; bottom:10%; right: 5%; width: 15%">
+<img src="./docs/sonic.png" style="position:absolute; bottom:10%; right: 5%; width: 15%">
 
 .footnote[[1] `vignette("roxygen2", package = "roxygen2")`  
 [2] https://rstudio.github.io/profvis  
@@ -179,7 +179,7 @@ Suivre la documentation RStudio pour la création de package
 class: withheader
 ## Structure du repo
 
-<img src="template_repo.png" style="float: right; width: 24%">
+<img src="./docs/template_repo.png" style="float: right; width: 24%">
 - `api/plumber.R` : Définir le routeur plumber.
 - `api/startup.R` : Script d'exécution plumber run (avec logs).
 - `rprodraqc19` : Les fichiers du package.
@@ -203,7 +203,7 @@ class: withheader
 #### Intégration continue
 #### Cohabitation des conteneurs
 
-<img src="continuous.gif" style="position:absolute; top:22%; right:22%; width:35%" />
+<img src="./docs/continuous.gif" style="position:absolute; top:22%; right:22%; width:35%" />
 
 ???
 
@@ -223,8 +223,8 @@ class: withheader
 ####Tests de charges
 ####Logging
 
-<img src="fine.png" style="position:absolute; top:32%; right:10%; width: 40%" />
-<img src="devops.jpg" style="position:absolute; top:54%; right:60%; width: 30%" />
+<img src="./docs/fine.png" style="position:absolute; top:32%; right:10%; width: 40%" />
+<img src="./docs/devops.jpg" style="position:absolute; top:54%; right:60%; width: 30%" />
 
 ???
 
