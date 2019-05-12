@@ -70,7 +70,7 @@ class: withheader
 
 <div style="float: left; height:8em; width: 8em; background-color: #92C744; text-align: center"><img src="package.png" style="width: 95%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ⇴</span>
-<div style="float: left; height:4.5em; width: 8em; background-color: #92C744; text-align: center; padding-top: 3.5em"><img src="opencpu.png" style="width: 95%"></div>
+<div style="float: left; height:7.5em; width: 8em; background-color: #92C744; text-align: center; padding-top:0.5em"><img src="plumber.png" style="width: 95%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ◇ </span>
 <div style="float: left; height:7em; width: 8em; background-color: orange; text-align: center; padding-top: 1em"><img src="docker.png" style="width: 90%"></div>
 <span style="float: left; margin:0.35em 0em 0.35em 0em; font-size:4em; width: 2em; text-align: center"> ⇴ </span>
@@ -95,13 +95,17 @@ class: withheader
  - Standard
  - Portable
  - Documentation
-- OpenCPU Server
- - API Dynamique
- - Balançage des charges
- - Multithreaded
+- Plumber
+ - Facile à déployer
+ - Simple à configurer, juste le conteneur, pas le apache
+ - Conteneur :
+  - Replicas : nombre d'appels concurrents max / 2 pour des appels de ~200ms
+  - Mémoire : request la quantité utilisé par les libs / limit * 2 256/512
+  - CPU : request 0.25, limit 2
 - Docker
  - Persistance
  - Déploiement
+
 
 ---
 class: withheader
@@ -114,7 +118,7 @@ class: withheader
 - `data-raw` : Entraînement des modèles et expérimentations.
 - `man` : Documentation générée par roxygen2.
 - `R/onLoad.R` : Exécuté au chargement du package.
-- `R/predict.R` : Point d'entrée API.
+- `R/predict.R` : Fonctions de prédictions.
 - `R/prepare.R` : Ingénierie des fonctionnalités.
 - `R/transform.R` : Adapter les données reçues par l'API.
 - `R/utils.R` : Autres fonctions dont le warmup.
@@ -133,7 +137,7 @@ class: withheader
 
 ???
 
-onLoad : pour augmenter les performances, les objets vont être déjà monté en mémoire
+onLoad : les objets vont être déjà monté en mémoire, réduit délai premier appel
 predict : fonction exportée
 prepare vs transform :
 -transform c'est pour mettre les données de l'API sous le même format que les données de l'entraînement
@@ -149,7 +153,8 @@ library(profvis)
 library(roxygen2)
 library(opencpu)
 debugonce()
-ocpu_start_server()
+browser()
+plumber::plumb("plumber.R")$run # ou le bouton dans RStudio
 ```
 
 #### Documenter avec `roxygen2`<sup>1</sup>
@@ -175,21 +180,18 @@ class: withheader
 ## Structure du repo
 
 <img src="template_repo.png" style="float: right; width: 24%">
-- `apachemod` : Modules apache mod_dumpost ubuntu 18.04.
-- `apachesites` : Configurations apache sites.
-- `opencpu/Rprofile` : Code R démarrage.
-- `opencpu/server.conf` : Configuration opencpu.
-- `rprodraqc19` : Package.
+- `api/plumber.R` : Définir le routeur plumber.
+- `api/startup.R` : Script d'exécution plumber run (avec logs).
+- `rprodraqc19` : Les fichiers du package.
 - `.Dockerignore` : Fichiers ignorés Docker.
 - `Dockerfile` : Configuration image Docker.
 - `README.md` : Lecture libre.
-- `rprodraqc19_0.1.0.tar.gz` : Source package built.
-- `version.json` : Version récupérée par jenkins.
+- `rprodraqc19_0.1.0.tar.gz` : R Source package built.
+- `version.json` : Version récupérée par l'outil d'intégration.
 
 ???
 
-mod_dumpost pour logger les posts request, compilé manuellement
-config apache très optional
+Plusieurs façon de bâtir l'image docker
 
 ---
 class: withheader
@@ -228,19 +230,19 @@ class: withheader
 
 Changer la version majeur de l'api lorsque le contrat change
 Définir le contrat d'appel, latence, réponses
-Effectuer des tests de charge pour trouver l'équilibre pour les performances
-Mettre en place des journalisations adéquate
+Effectuer des tests de charge pour trouver l'équilibre pour les performances et la configuration des conteneurs
+Mettre en place des journalisations adéquates
 Trouver et prévoir les problèmes
 
 ---
 class: withheader
 
 # Références devops
-https://www.opencpu.org/api.html  
-https://www.opencpu.org/download.html  
-https://github.com/cw25/opencpu_service_ci_tutorial  
+https://www.rplumber.io/docs/  
+https://github.com/trestletech/plumber  
+https://rviews.rstudio.com/2018/07/23/rest-apis-and-plumber/  
+https://opensource.t-mobile.com/blog/posts/r-tensorflow-api/  
 https://www.json.org/  
-https://httpd.apache.org/docs/2.4/configuring.html  
 https://cloud.google.com/kubernetes-engine/docs/  
 https://cloud.google.com/blog/products/ai-machine-learning/making-the-machine-the-machine-learning-lifecycle  
 
@@ -249,7 +251,7 @@ https://cloud.google.com/blog/products/ai-machine-learning/making-the-machine-th
 class: allcode
 experiments.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 library(odbc)
 library(data.table)
 library(xgboost)
@@ -296,7 +298,7 @@ use_data(trained_model, data_template, reference_object, internal = FALSE, overw
 class: allcode
 onLoad.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 .onLoad <- function(lib, pkg){
   utils::data(trained_model,
               data_template,
@@ -306,7 +308,7 @@ onLoad.R
 ```
 utils.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 year_diff <- function(time1, time2) {
   time1 <- as.POSIXlt(time1, "GMT") #<<
   time2 <- as.POSIXlt(time2, "GMT")
@@ -335,7 +337,7 @@ warmup <- function() { #<<
 class: allcode
 transform.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 #' @importFrom ...
 transform <- function(input) {
 
@@ -354,7 +356,7 @@ transform <- function(input) {
 ```
 validate.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 #' @export
 validate <- function(input) {
   selected <-  c("MODVAR1", "DATE",  ...)
@@ -375,7 +377,7 @@ on veut une préparation unique pour l'api et l'utilisation interne du package
 class: allcode
 prepare.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 #' @importFrom ...
 #' @export
 prepare <- function(input) {
@@ -423,7 +425,7 @@ prepare <- function(input) {
 class: allcode
 predict.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 #' @export
 predict_model_api <- function(input) {
   transform(input)
@@ -446,7 +448,7 @@ predict_model <- function(input) {
 class: allcode
 DESCRIPTION
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 Package: rprodraqc19
 Type: Package
 Title: Pseudo code template
@@ -463,7 +465,7 @@ Imports:
 ```
 .gitignore
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 .Rproj.user
 .Rhistory
 .RData
@@ -471,7 +473,7 @@ Imports:
 ```
 .Rbuildignore
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.RData$
@@ -482,41 +484,43 @@ Imports:
 ```
 ---
 class: allcode
-Rprofile
+plumber.R
 
-```{r eval=FALSE}
+```{r eval=FALSE}  
 library(rprodraqc19)
-warmup() #<<
+warmup()
+
+#* @apiTitle R en Production
+#* @api
+
+#* Predict total loss cgen
+#* @param input Input for our model
+#* @post /predict_model_api
+#* @get /predict_model_api
+#* @json
+function(input) {
+    return(predict_model_api(input))
+}
 ```
 
-server.conf
+startup.R
 
-```{r eval=FALSE}
-{
-    "enable.api.library": true,
-    "enable.api.apps": false,
-    "enable.api.user": false,
-    "enable.api.tmp": false,
-    "enable.cors" : true,
-    "enable.post.code": false,
-    "enable.rlimits" : true,
-    "error.showcall": true,
-    "smtp.server" : "localhost",
-    "httpcache.post": 300,
-    "httpcache.lib": 86400,
-    "httpcache.apps": 900,
-    "httpcache.tmp": 86400,
-    "httpcache.static": 31536000,
-    "key.length" : 13,
-    "repos": "https://cran.rstudio.com",
-    "rlimit.as": 4e9,
-    "rlimit.fsize": 1e9,
-    "rlimit.nproc": null,
-    "timelimit.get": 60,
-    "timelimit.post": 90,
-    "timelimit.webhook": 900,
-    "preload": ["lattice","rprodraqc19"]
-}
+```{r eval=FALSE}  
+library(plumber)
+pr <- plumb("/etc/plumber.R")
+pr$registerHooks(list(
+    postroute = function(req) {
+        if (req$REQUEST_METHOD == "POST") {
+            cat("[", req$REQUEST_METHOD, req$PATH_INFO, "] - REQUEST - ", req$postBody, "\n", sep = "")
+        }
+    },
+    postserialize = function(req, res) {
+        if (req$REQUEST_METHOD == "POST") {
+            cat("[", req$REQUEST_METHOD, req$PATH_INFO, "] - RESPONSE - ", res$status, " - ", res$body, "\n", sep = "")
+        }
+    }
+))
+pr$run(host = '0.0.0.0', port = 80) #<<
 ```
 
 ???
@@ -524,31 +528,34 @@ server.conf
 warmup pour certaines fonctions, meilleurs performances
 
 ---
-.Dockerignore
+.Dockerignore  
 
-``` {r eval=FALSE}
+``` {r eval=FALSE}  
 rprodraqc19
 ```
 
-Dockerfile
+Dockerfile  
 
-``` {r eval=FALSE}
-FROM opencpu/base:latest
-  
-WORKDIR /src
-COPY ./rprodraqc19_0.1.0.tar.gz /rprodraqc19_0.1.0.tar.gz
-COPY ./opencpu/Rprofile /etc/opencpu/Rprofile
-COPY ./opencpu/server.conf /etc/opencpu/server.conf
+``` {r eval=FALSE}  
+FROM trestletech/plumber:latest
 
-RUN apt-get update
-RUN apt-get install ... #<<
-RUN R CMD INSTALL /rprodraqc19_0.1.0.tar.gz
+COPY ./rprodraqc19_0.1.0.tar.gz /tmp/rprodraqc19_0.1.0.tar.gz
+COPY ./api /etc
+
+RUN apt-get update && \
+    apt-get upgrade -f -y && \
+    apt-get install -y apt-utils
+RUN R -e 'install.packages(c("xgboost", "data.table", "Matrix"))'
+RUN R CMD INSTALL /tmp/rprodraqc19_0.1.0.tar.gz
+
+EXPOSE 80
+ENTRYPOINT ["R", "-f", "/etc/startup.R", "--slave"]
 ```
 
 Useful docker command
 
-```{r eval=FALSE}
-docker run -d -p 8004:8004 image
+```{r eval=FALSE}  
+docker run -d -p 8123:80 image
 docker exec -i -t image /bin/bash
 docker image ls -a
 docker ps

@@ -1,17 +1,18 @@
-FROM gcr.io/corp-prod-gkeinfra/lacapitale-base-opencpu:2.1.1r2
+FROM trestletech/plumber:latest
+
+# Settings up working directory
+WORKDIR /src
 
 # Copying files over
-WORKDIR /src
-COPY ./totalloss /totalloss
-COPY ./apachemod/mod_dumpost.so /usr/lib/apache2/modules/mod_dumpost.so
-COPY ./apachemod/dumpost.load /etc/apache2/mods-available/dumpost.load
-COPY ./apachesites /etc/apache2/sites-available
-COPY ./opencpu/Rprofile /etc/opencpu/Rprofile
-COPY ./opencpu/server.conf /etc/opencpu/server.conf
+COPY ./rprodraqc19_0.1.0.tar.gz /tmp/rprodraqc19_0.1.0.tar.gz
+COPY ./api /etc
 
-# Install built package
-RUN R CMD INSTALL /totalloss/totalloss_1.0.1.tar.gz
+# Update/Upgrade and install packages
+RUN apt-get update && \
+    apt-get upgrade -f -y && \
+    apt-get install -y apt-utils
+RUN R -e 'install.packages(c("xgboost", "data.table", "Matrix"))'
+RUN R CMD INSTALL /tmp/rprodraqc19_0.1.0.tar.gz
 
-# Enable dumpost from precompiled binaries
-RUN chmod 644 /usr/lib/apache2/modules/mod_dumpost.so
-RUN a2enmod dumpost
+EXPOSE 80
+ENTRYPOINT ["R", "-f", "/etc/startup.R", "--slave"]
