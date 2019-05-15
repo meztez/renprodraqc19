@@ -142,10 +142,10 @@ class: withheader
 ```r
 library(profvis)
 library(roxygen2)
-library(opencpu)
+library(plumber)
 debugonce()
 browser()
-plumber::plumb("plumber.R")$run # ou le bouton dans RStudio
+plumb("plumber.R")$run # ou le bouton dans RStudio
 ```
 
 #### Documenter avec `roxygen2`&lt;sup&gt;1&lt;/sup&gt;
@@ -154,13 +154,13 @@ plumber::plumb("plumber.R")$run # ou le bouton dans RStudio
 
 #### Utiliser debug pour inspecter l'exécution
 
-#### Valider l'API du package localement
+#### Valider l'API du package localement&lt;sup&gt;3&lt;/sup&gt;
 
 &lt;img src="./docs/sonic.png" style="position:absolute; bottom:10%; right: 5%; width: 15%"&gt;
 
 .footnote[[1] `vignette("roxygen2", package = "roxygen2")`  
 [2] https://rstudio.github.io/profvis  
-[3] https://cloud.opencpu.org/ocpu/test/]
+[3] https://www.rplumber.io/docs/]
 
 ???
 
@@ -365,7 +365,7 @@ validate &lt;- function(input) {
 
 ???
 
-transform parce que l'input opencpu est un data.frame
+transform parce que l'input plumber est un data.frame
 
 on veut une préparation unique pour l'api et l'utilisation interne du package
 
